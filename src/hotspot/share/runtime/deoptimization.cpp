@@ -2042,21 +2042,30 @@ static void log_deopt(nmethod* nm, Method* tm, intptr_t pc, frame& fr, int trap_
 }
 
 // Shift the receiver counts and the overflow count of a call site's type
-// profile right by 'shift', freeing rows whose count reaches zero.
+// profile right by 'shift'. A shift of 32 or more resets the site. A smaller
+// shift ages the counts but keeps the evidence of what has been seen: every
+// row keeps its receiver with a count of at least one, and a non-zero overflow
+// count stays non-zero, so an aged polymorphic site cannot look monomorphic or
+// bimorphic to C2 after a short reprofile. Row replacement
+// (TypeProfileReplaceShift) is what lets a new receiver displace an aged row.
 static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
-  for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
-    if (rtd->receiver(row) == nullptr) {
-      continue;
-    }
-    uint c = (shift >= 32) ? 0 : (rtd->receiver_count(row) >> shift);
-    if (c == 0) {
+  if (shift >= 32) {
+    for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
       rtd->set_receiver(row, nullptr);
       rtd->set_receiver_count(row, 0);
-    } else {
-      rtd->set_receiver_count(row, c);
+    }
+    rtd->set_count(0);
+    return;
+  }
+  for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
+    if (rtd->receiver(row) != nullptr) {
+      rtd->set_receiver_count(row, MAX2(rtd->receiver_count(row) >> shift, 1u));
     }
   }
-  rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
+  int c = rtd->count();
+  if (c > 0) {
+    rtd->set_count(MAX2(c >> shift, 1));
+  }
 }
 
 static void decay_all_receiver_profiles(MethodData* mdo, int shift) {
