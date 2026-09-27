@@ -1353,6 +1353,7 @@ const int ObjectAlignmentInBytes = 8;
           "site's overflow count shifted right by this amount; the "       \
           "overflow count then restarts. 0 means rows are never replaced") \
           range(0, 30)                                                      \
+                                                                            \
   product(int, TypeProfileTrapDecayShift, 0,                                \
           "When a class check or bimorphic guard at a call site deopts "    \
           "compiled code, shift that site's receiver and overflow counts " \
