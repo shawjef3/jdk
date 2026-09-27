@@ -1,0 +1,101 @@
+diff --git a/src/hotspot/share/runtime/deoptimization.cpp b/src/hotspot/share/runtime/deoptimization.cpp
+index 4042bb01c58..cf3d1f572df 100644
+--- a/src/hotspot/share/runtime/deoptimization.cpp
++++ b/src/hotspot/share/runtime/deoptimization.cpp
+@@ -2041,6 +2041,32 @@ static void log_deopt(nmethod* nm, Method* tm, intptr_t pc, frame& fr, int trap_
+   }
+ }
+ 
++// Shift the receiver counts and the overflow count of a call site's type
++// profile right by 'shift', freeing rows whose count reaches zero.
++static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
++  for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
++    if (rtd->receiver(row) == nullptr) {
++      continue;
++    }
++    uint c = (shift >= 32) ? 0 : (rtd->receiver_count(row) >> shift);
++    if (c == 0) {
++      rtd->set_receiver(row, nullptr);
++      rtd->set_receiver_count(row, 0);
++    } else {
++      rtd->set_receiver_count(row, c);
++    }
++  }
++  rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
++}
++
++static void decay_all_receiver_profiles(MethodData* mdo, int shift) {
++  for (ProfileData* p = mdo->first_data(); mdo->is_valid(p); p = mdo->next_data(p)) {
++    if (p->is_VirtualCallData()) {
++      decay_receiver_profile(p->as_ReceiverTypeData(), shift);
++    }
++  }
++}
++
+ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint trap_request)) {
+   HandleMark hm(current);
+ 
+@@ -2459,6 +2485,35 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
+         return; // the call did not change nmethod's state
+       }
+ 
++      if (TypeProfileTrapDecayShift > 0) {
++        // A receiver guard built from a call site's profile failed often enough
++        // to discard the code: the rows describe an earlier phase of the program.
++        // Age them so that the traffic seen from now on decides the next
++        // compilation instead of counts accumulated before the phase change.
++        bool guard_failed = pdata != nullptr && pdata->is_VirtualCallData() &&
++                            (reason == Reason_class_check || reason == Reason_bimorphic);
++        if (guard_failed || TypeProfileTrapDecayAnyReason) {
++          // Aged rows are only useful if the method runs profiled for a while
++          // before C2 reads them again; otherwise the recompile can see empty
++          // or stale rows and settle on a virtual call, which never traps.
++          reprofile = true;
++        }
++        if (guard_failed && !TypeProfileTrapDecayAllSites) {
++          decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
++        } else if (guard_failed || TypeProfileTrapDecayAnyReason) {
++          // A guard failure is evidence of a phase change for the whole method:
++          // its other sites' rows are as old as this one's, and a site compiled
++          // as a virtual call never traps to report that it went stale. With
++          // TypeProfileTrapDecayAnyReason, any trap that discards the code (for
++          // example an unstable_if on a path the old phase never took) counts
++          // as such evidence for the method being recompiled.
++          MethodData* mdo = guard_failed ? trap_mdo : nm->method()->method_data();
++          if (mdo != nullptr) {
++            decay_all_receiver_profiles(mdo, TypeProfileTrapDecayShift);
++          }
++        }
++      }
++
+       if (pdata != nullptr) {
+         // Record the recompilation event, if any.
+         int tstate0 = pdata->trap_state();
+diff --git a/src/hotspot/share/runtime/globals.hpp b/src/hotspot/share/runtime/globals.hpp
+index 75736d0dc7d..d7044e322c5 100644
+--- a/src/hotspot/share/runtime/globals.hpp
++++ b/src/hotspot/share/runtime/globals.hpp
+@@ -1347,6 +1347,23 @@ const int ObjectAlignmentInBytes = 8;
+           "Number of receiver types to record in call/cast profile")        \
+           range(0, 8)                                                       \
+                                                                             \
++  product(int, TypeProfileTrapDecayShift, 0,                                \
++          "When a class check or bimorphic guard at a call site deopts "    \
++          "compiled code, shift that site's receiver and overflow counts " \
++          "right by this amount, freeing rows that reach zero. "           \
++          "0 means no decay")                                               \
++          range(0, 32)                                                      \
++                                                                            \
++  product(bool, TypeProfileTrapDecayAllSites, false,                        \
++          "With TypeProfileTrapDecayShift, decay the receiver profiles of " \
++          "every virtual call site in the trapping method, not only the "  \
++          "site whose guard failed")                                        \
++                                                                            \
++  product(bool, TypeProfileTrapDecayAnyReason, false,                       \
++          "With TypeProfileTrapDecayShift, decay the receiver profiles of " \
++          "every virtual call site in a method whose compiled code is "    \
++          "discarded by an uncommon trap of any reason")                    \
++                                                                            \
+   develop(intx, BciProfileWidth,      2,                                    \
+           "Number of return bci's to record in ret profile")                \
+                                                                             \

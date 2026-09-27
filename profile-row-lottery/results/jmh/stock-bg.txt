@@ -1,0 +1,783 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25-internal, OpenJDK 64-Bit Server VM, 25-internal-adhoc.root.bridge-cse01VXpLQJaGdc6q75QXSBbrie
+# VM invoker: /root/jdks/stock/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 1 s each
+# Measurement: 3 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: lottery.jmh.RunLoopBench.hotProgram
+# Parameters: (bgN = 16, bgPeriodUs = 1000, k = 2, mode = bg, n = 1000, startupMs = 500)
+
+# Run progress: 0.00% complete, ETA 00:06:24
+# Fork: 1 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 15509.876 ops/ms
+# Warmup Iteration   2: 19317.425 ops/ms
+# Warmup Iteration   3: 24231.248 ops/ms
+# Warmup Iteration   4: 23901.458 ops/ms
+# Warmup Iteration   5: 25453.757 ops/ms
+Iteration   1: 26377.881 ops/ms
+Iteration   2: 24978.431 ops/ms
+Iteration   3: 27791.628 ops/ms
+
+# Run progress: 2.08% complete, ETA 00:06:37
+# Fork: 2 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 18892.296 ops/ms
+# Warmup Iteration   2: 21889.546 ops/ms
+# Warmup Iteration   3: 28586.194 ops/ms
+# Warmup Iteration   4: 27947.447 ops/ms
+# Warmup Iteration   5: 21449.472 ops/ms
+Iteration   1: 20266.197 ops/ms
+Iteration   2: 26619.382 ops/ms
+Iteration   3: 27968.340 ops/ms
+
+# Run progress: 4.17% complete, ETA 00:06:26
+# Fork: 3 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 21978.477 ops/ms
+# Warmup Iteration   2: 30747.769 ops/ms
+# Warmup Iteration   3: 30835.080 ops/ms
+# Warmup Iteration   4: 28456.459 ops/ms
+# Warmup Iteration   5: 33254.969 ops/ms
+Iteration   1: 33816.704 ops/ms
+Iteration   2: 32176.535 ops/ms
+Iteration   3: 32932.261 ops/ms
+
+# Run progress: 6.25% complete, ETA 00:06:18
+# Fork: 4 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 27499.303 ops/ms
+# Warmup Iteration   2: 30500.074 ops/ms
+# Warmup Iteration   3: 32251.072 ops/ms
+# Warmup Iteration   4: 30229.914 ops/ms
+# Warmup Iteration   5: 28634.062 ops/ms
+Iteration   1: 31069.816 ops/ms
+Iteration   2: 28690.254 ops/ms
+Iteration   3: 30307.421 ops/ms
+
+# Run progress: 8.33% complete, ETA 00:06:09
+# Fork: 5 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25968.111 ops/ms
+# Warmup Iteration   2: 30580.811 ops/ms
+# Warmup Iteration   3: 31937.378 ops/ms
+# Warmup Iteration   4: 33578.814 ops/ms
+# Warmup Iteration   5: 33212.427 ops/ms
+Iteration   1: 34746.589 ops/ms
+Iteration   2: 31136.796 ops/ms
+Iteration   3: 31030.710 ops/ms
+
+# Run progress: 10.42% complete, ETA 00:06:00
+# Fork: 6 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23558.512 ops/ms
+# Warmup Iteration   2: 27090.216 ops/ms
+# Warmup Iteration   3: 26529.218 ops/ms
+# Warmup Iteration   4: 28280.559 ops/ms
+# Warmup Iteration   5: 27928.126 ops/ms
+Iteration   1: 24986.076 ops/ms
+Iteration   2: 27640.906 ops/ms
+Iteration   3: 28772.829 ops/ms
+
+# Run progress: 12.50% complete, ETA 00:05:51
+# Fork: 7 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 21221.984 ops/ms
+# Warmup Iteration   2: 25218.590 ops/ms
+# Warmup Iteration   3: 27215.195 ops/ms
+# Warmup Iteration   4: 29330.418 ops/ms
+# Warmup Iteration   5: 27898.955 ops/ms
+Iteration   1: 30076.396 ops/ms
+Iteration   2: 28624.703 ops/ms
+Iteration   3: 28399.621 ops/ms
+
+# Run progress: 14.58% complete, ETA 00:05:43
+# Fork: 8 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25911.397 ops/ms
+# Warmup Iteration   2: 24645.292 ops/ms
+# Warmup Iteration   3: 26592.567 ops/ms
+# Warmup Iteration   4: 27980.096 ops/ms
+# Warmup Iteration   5: 28030.481 ops/ms
+Iteration   1: 25715.102 ops/ms
+Iteration   2: 28080.197 ops/ms
+Iteration   3: 29368.523 ops/ms
+
+# Run progress: 16.67% complete, ETA 00:05:35
+# Fork: 9 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 24487.191 ops/ms
+# Warmup Iteration   2: 31913.557 ops/ms
+# Warmup Iteration   3: 29866.686 ops/ms
+# Warmup Iteration   4: 23150.176 ops/ms
+# Warmup Iteration   5: 32486.255 ops/ms
+Iteration   1: 34103.200 ops/ms
+Iteration   2: 30736.515 ops/ms
+Iteration   3: 29675.256 ops/ms
+
+# Run progress: 18.75% complete, ETA 00:05:26
+# Fork: 10 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 27110.822 ops/ms
+# Warmup Iteration   2: 31669.463 ops/ms
+# Warmup Iteration   3: 31999.444 ops/ms
+# Warmup Iteration   4: 32381.320 ops/ms
+# Warmup Iteration   5: 29452.513 ops/ms
+Iteration   1: 32707.049 ops/ms
+Iteration   2: 33619.207 ops/ms
+Iteration   3: 34463.410 ops/ms
+
+# Run progress: 20.83% complete, ETA 00:05:18
+# Fork: 11 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23172.153 ops/ms
+# Warmup Iteration   2: 33434.451 ops/ms
+# Warmup Iteration   3: 31838.531 ops/ms
+# Warmup Iteration   4: 30890.309 ops/ms
+# Warmup Iteration   5: 33621.539 ops/ms
+Iteration   1: 31644.108 ops/ms
+Iteration   2: 35559.976 ops/ms
+Iteration   3: 32272.853 ops/ms
+
+# Run progress: 22.92% complete, ETA 00:05:09
+# Fork: 12 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25178.268 ops/ms
+# Warmup Iteration   2: 19716.726 ops/ms
+# Warmup Iteration   3: 30390.355 ops/ms
+# Warmup Iteration   4: 31532.180 ops/ms
+# Warmup Iteration   5: 31150.452 ops/ms
+Iteration   1: 33797.498 ops/ms
+Iteration   2: 32761.591 ops/ms
+Iteration   3: 32345.836 ops/ms
+
+# Run progress: 25.00% complete, ETA 00:05:01
+# Fork: 13 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 28702.242 ops/ms
+# Warmup Iteration   2: 34140.480 ops/ms
+# Warmup Iteration   3: 34691.418 ops/ms
+# Warmup Iteration   4: 30727.183 ops/ms
+# Warmup Iteration   5: 31612.235 ops/ms
+Iteration   1: 28873.538 ops/ms
+Iteration   2: 33042.895 ops/ms
+Iteration   3: 33802.176 ops/ms
+
+# Run progress: 27.08% complete, ETA 00:04:52
+# Fork: 14 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 26947.412 ops/ms
+# Warmup Iteration   2: 28537.495 ops/ms
+# Warmup Iteration   3: 28302.548 ops/ms
+# Warmup Iteration   4: 21669.993 ops/ms
+# Warmup Iteration   5: 17892.675 ops/ms
+Iteration   1: 19764.606 ops/ms
+Iteration   2: 26083.599 ops/ms
+Iteration   3: 20110.944 ops/ms
+
+# Run progress: 29.17% complete, ETA 00:04:44
+# Fork: 15 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25350.247 ops/ms
+# Warmup Iteration   2: 20616.533 ops/ms
+# Warmup Iteration   3: 21682.625 ops/ms
+# Warmup Iteration   4: 32380.418 ops/ms
+# Warmup Iteration   5: 33008.754 ops/ms
+Iteration   1: 34589.525 ops/ms
+Iteration   2: 29804.394 ops/ms
+Iteration   3: 26659.940 ops/ms
+
+# Run progress: 31.25% complete, ETA 00:04:36
+# Fork: 16 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25729.887 ops/ms
+# Warmup Iteration   2: 33173.244 ops/ms
+# Warmup Iteration   3: 28084.922 ops/ms
+# Warmup Iteration   4: 22737.640 ops/ms
+# Warmup Iteration   5: 26407.018 ops/ms
+Iteration   1: 29436.520 ops/ms
+Iteration   2: 30545.872 ops/ms
+Iteration   3: 30134.700 ops/ms
+
+# Run progress: 33.33% complete, ETA 00:04:27
+# Fork: 17 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 20934.449 ops/ms
+# Warmup Iteration   2: 28807.087 ops/ms
+# Warmup Iteration   3: 31710.581 ops/ms
+# Warmup Iteration   4: 33873.654 ops/ms
+# Warmup Iteration   5: 31503.871 ops/ms
+Iteration   1: 31746.183 ops/ms
+Iteration   2: 28134.392 ops/ms
+Iteration   3: 32657.208 ops/ms
+
+# Run progress: 35.42% complete, ETA 00:04:19
+# Fork: 18 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 26678.782 ops/ms
+# Warmup Iteration   2: 27046.752 ops/ms
+# Warmup Iteration   3: 29580.647 ops/ms
+# Warmup Iteration   4: 28923.961 ops/ms
+# Warmup Iteration   5: 32283.422 ops/ms
+Iteration   1: 34277.557 ops/ms
+Iteration   2: 30590.241 ops/ms
+Iteration   3: 32349.246 ops/ms
+
+# Run progress: 37.50% complete, ETA 00:04:11
+# Fork: 19 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23251.904 ops/ms
+# Warmup Iteration   2: 31449.258 ops/ms
+# Warmup Iteration   3: 32669.024 ops/ms
+# Warmup Iteration   4: 27375.609 ops/ms
+# Warmup Iteration   5: 31822.131 ops/ms
+Iteration   1: 31978.661 ops/ms
+Iteration   2: 21854.475 ops/ms
+Iteration   3: 27013.352 ops/ms
+
+# Run progress: 39.58% complete, ETA 00:04:02
+# Fork: 20 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 21660.811 ops/ms
+# Warmup Iteration   2: 27602.568 ops/ms
+# Warmup Iteration   3: 29895.098 ops/ms
+# Warmup Iteration   4: 22738.248 ops/ms
+# Warmup Iteration   5: 24376.077 ops/ms
+Iteration   1: 14863.021 ops/ms
+Iteration   2: 15886.922 ops/ms
+Iteration   3: 30440.126 ops/ms
+
+# Run progress: 41.67% complete, ETA 00:03:54
+# Fork: 21 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 27495.242 ops/ms
+# Warmup Iteration   2: 31708.814 ops/ms
+# Warmup Iteration   3: 34453.517 ops/ms
+# Warmup Iteration   4: 31921.498 ops/ms
+# Warmup Iteration   5: 21733.156 ops/ms
+Iteration   1: 22079.522 ops/ms
+Iteration   2: 23332.096 ops/ms
+Iteration   3: 25336.297 ops/ms
+
+# Run progress: 43.75% complete, ETA 00:03:46
+# Fork: 22 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 21012.721 ops/ms
+# Warmup Iteration   2: 25865.777 ops/ms
+# Warmup Iteration   3: 28000.184 ops/ms
+# Warmup Iteration   4: 27770.621 ops/ms
+# Warmup Iteration   5: 28724.305 ops/ms
+Iteration   1: 26752.143 ops/ms
+Iteration   2: 23627.698 ops/ms
+Iteration   3: 16949.694 ops/ms
+
+# Run progress: 45.83% complete, ETA 00:03:37
+# Fork: 23 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 26032.478 ops/ms
+# Warmup Iteration   2: 29714.842 ops/ms
+# Warmup Iteration   3: 31389.676 ops/ms
+# Warmup Iteration   4: 34788.049 ops/ms
+# Warmup Iteration   5: 34099.916 ops/ms
+Iteration   1: 34546.907 ops/ms
+Iteration   2: 33199.617 ops/ms
+Iteration   3: 32127.503 ops/ms
+
+# Run progress: 47.92% complete, ETA 00:03:29
+# Fork: 24 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 26870.847 ops/ms
+# Warmup Iteration   2: 31186.111 ops/ms
+# Warmup Iteration   3: 32856.178 ops/ms
+# Warmup Iteration   4: 33932.120 ops/ms
+# Warmup Iteration   5: 31119.372 ops/ms
+Iteration   1: 31492.150 ops/ms
+Iteration   2: 33148.333 ops/ms
+Iteration   3: 31932.684 ops/ms
+
+
+Result "lottery.jmh.RunLoopBench.hotProgram":
+  29089.230 ±(99.9%) 1893.806 ops/ms [Average]
+  (min, avg, max) = (14863.021, 29089.230, 35559.976), stdev = 4681.019
+  CI (99.9%): [27195.424, 30983.035] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25-internal, OpenJDK 64-Bit Server VM, 25-internal-adhoc.root.bridge-cse01VXpLQJaGdc6q75QXSBbrie
+# VM invoker: /root/jdks/stock/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 1 s each
+# Measurement: 3 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: lottery.jmh.RunLoopBench.hotProgram
+# Parameters: (bgN = 16, bgPeriodUs = 1000, k = 4, mode = bg, n = 1000, startupMs = 500)
+
+# Run progress: 50.00% complete, ETA 00:03:20
+# Fork: 1 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23476.653 ops/ms
+# Warmup Iteration   2: 30443.771 ops/ms
+# Warmup Iteration   3: 31321.968 ops/ms
+# Warmup Iteration   4: 29695.649 ops/ms
+# Warmup Iteration   5: 32013.328 ops/ms
+Iteration   1: 29827.993 ops/ms
+Iteration   2: 31180.984 ops/ms
+Iteration   3: 30778.102 ops/ms
+
+# Run progress: 52.08% complete, ETA 00:03:12
+# Fork: 2 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23556.074 ops/ms
+# Warmup Iteration   2: 32590.539 ops/ms
+# Warmup Iteration   3: 32761.627 ops/ms
+# Warmup Iteration   4: 31269.845 ops/ms
+# Warmup Iteration   5: 32580.796 ops/ms
+Iteration   1: 32848.881 ops/ms
+Iteration   2: 31140.052 ops/ms
+Iteration   3: 33562.917 ops/ms
+
+# Run progress: 54.17% complete, ETA 00:03:04
+# Fork: 3 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23767.572 ops/ms
+# Warmup Iteration   2: 29440.139 ops/ms
+# Warmup Iteration   3: 28436.529 ops/ms
+# Warmup Iteration   4: 26019.809 ops/ms
+# Warmup Iteration   5: 29772.042 ops/ms
+Iteration   1: 30069.589 ops/ms
+Iteration   2: 27999.725 ops/ms
+Iteration   3: 29466.718 ops/ms
+
+# Run progress: 56.25% complete, ETA 00:02:55
+# Fork: 4 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 24361.926 ops/ms
+# Warmup Iteration   2: 32232.698 ops/ms
+# Warmup Iteration   3: 31376.639 ops/ms
+# Warmup Iteration   4: 28522.504 ops/ms
+# Warmup Iteration   5: 26023.273 ops/ms
+Iteration   1: 27448.498 ops/ms
+Iteration   2: 19778.686 ops/ms
+Iteration   3: 21168.102 ops/ms
+
+# Run progress: 58.33% complete, ETA 00:02:47
+# Fork: 5 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 15774.513 ops/ms
+# Warmup Iteration   2: 19539.146 ops/ms
+# Warmup Iteration   3: 18973.670 ops/ms
+# Warmup Iteration   4: 20510.334 ops/ms
+# Warmup Iteration   5: 19633.382 ops/ms
+Iteration   1: 22034.738 ops/ms
+Iteration   2: 23816.254 ops/ms
+Iteration   3: 22709.169 ops/ms
+
+# Run progress: 60.42% complete, ETA 00:02:39
+# Fork: 6 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 18132.310 ops/ms
+# Warmup Iteration   2: 24325.379 ops/ms
+# Warmup Iteration   3: 28595.509 ops/ms
+# Warmup Iteration   4: 24771.036 ops/ms
+# Warmup Iteration   5: 28204.706 ops/ms
+Iteration   1: 28586.509 ops/ms
+Iteration   2: 30638.101 ops/ms
+Iteration   3: 29971.465 ops/ms
+
+# Run progress: 62.50% complete, ETA 00:02:30
+# Fork: 7 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 19895.357 ops/ms
+# Warmup Iteration   2: 22174.567 ops/ms
+# Warmup Iteration   3: 24057.375 ops/ms
+# Warmup Iteration   4: 25309.601 ops/ms
+# Warmup Iteration   5: 27543.423 ops/ms
+Iteration   1: 24267.687 ops/ms
+Iteration   2: 23957.731 ops/ms
+Iteration   3: 23667.040 ops/ms
+
+# Run progress: 64.58% complete, ETA 00:02:22
+# Fork: 8 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 24023.270 ops/ms
+# Warmup Iteration   2: 20665.659 ops/ms
+# Warmup Iteration   3: 23542.164 ops/ms
+# Warmup Iteration   4: 29443.484 ops/ms
+# Warmup Iteration   5: 25630.571 ops/ms
+Iteration   1: 30068.952 ops/ms
+Iteration   2: 26758.825 ops/ms
+Iteration   3: 29734.932 ops/ms
+
+# Run progress: 66.67% complete, ETA 00:02:14
+# Fork: 9 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25040.641 ops/ms
+# Warmup Iteration   2: 27210.268 ops/ms
+# Warmup Iteration   3: 29262.802 ops/ms
+# Warmup Iteration   4: 30982.357 ops/ms
+# Warmup Iteration   5: 29812.714 ops/ms
+Iteration   1: 24777.356 ops/ms
+Iteration   2: 29384.985 ops/ms
+Iteration   3: 26694.270 ops/ms
+
+# Run progress: 68.75% complete, ETA 00:02:05
+# Fork: 10 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25049.929 ops/ms
+# Warmup Iteration   2: 29866.543 ops/ms
+# Warmup Iteration   3: 30795.445 ops/ms
+# Warmup Iteration   4: 28421.758 ops/ms
+# Warmup Iteration   5: 29613.902 ops/ms
+Iteration   1: 28499.962 ops/ms
+Iteration   2: 31658.011 ops/ms
+Iteration   3: 28636.781 ops/ms
+
+# Run progress: 70.83% complete, ETA 00:01:57
+# Fork: 11 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23955.843 ops/ms
+# Warmup Iteration   2: 30477.762 ops/ms
+# Warmup Iteration   3: 30106.309 ops/ms
+# Warmup Iteration   4: 31950.094 ops/ms
+# Warmup Iteration   5: 32255.118 ops/ms
+Iteration   1: 29233.551 ops/ms
+Iteration   2: 24742.938 ops/ms
+Iteration   3: 26075.247 ops/ms
+
+# Run progress: 72.92% complete, ETA 00:01:48
+# Fork: 12 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 18535.647 ops/ms
+# Warmup Iteration   2: 24062.119 ops/ms
+# Warmup Iteration   3: 26655.066 ops/ms
+# Warmup Iteration   4: 28633.362 ops/ms
+# Warmup Iteration   5: 30359.906 ops/ms
+Iteration   1: 27337.299 ops/ms
+Iteration   2: 29136.677 ops/ms
+Iteration   3: 29937.226 ops/ms
+
+# Run progress: 75.00% complete, ETA 00:01:40
+# Fork: 13 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25271.483 ops/ms
+# Warmup Iteration   2: 31080.930 ops/ms
+# Warmup Iteration   3: 29764.582 ops/ms
+# Warmup Iteration   4: 29913.131 ops/ms
+# Warmup Iteration   5: 28953.087 ops/ms
+Iteration   1: 30094.251 ops/ms
+Iteration   2: 33161.351 ops/ms
+Iteration   3: 30923.498 ops/ms
+
+# Run progress: 77.08% complete, ETA 00:01:32
+# Fork: 14 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 22476.508 ops/ms
+# Warmup Iteration   2: 24279.164 ops/ms
+# Warmup Iteration   3: 27066.553 ops/ms
+# Warmup Iteration   4: 25445.597 ops/ms
+# Warmup Iteration   5: 24805.597 ops/ms
+Iteration   1: 27283.242 ops/ms
+Iteration   2: 23882.397 ops/ms
+Iteration   3: 28473.930 ops/ms
+
+# Run progress: 79.17% complete, ETA 00:01:23
+# Fork: 15 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 24507.107 ops/ms
+# Warmup Iteration   2: 30534.792 ops/ms
+# Warmup Iteration   3: 31749.871 ops/ms
+# Warmup Iteration   4: 33404.481 ops/ms
+# Warmup Iteration   5: 33458.433 ops/ms
+Iteration   1: 32619.695 ops/ms
+Iteration   2: 30602.465 ops/ms
+Iteration   3: 31349.855 ops/ms
+
+# Run progress: 81.25% complete, ETA 00:01:15
+# Fork: 16 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25841.693 ops/ms
+# Warmup Iteration   2: 28171.025 ops/ms
+# Warmup Iteration   3: 27703.549 ops/ms
+# Warmup Iteration   4: 30410.593 ops/ms
+# Warmup Iteration   5: 31693.457 ops/ms
+Iteration   1: 32181.933 ops/ms
+Iteration   2: 32304.665 ops/ms
+Iteration   3: 30619.437 ops/ms
+
+# Run progress: 83.33% complete, ETA 00:01:07
+# Fork: 17 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 17880.317 ops/ms
+# Warmup Iteration   2: 25267.647 ops/ms
+# Warmup Iteration   3: 28736.018 ops/ms
+# Warmup Iteration   4: 25595.486 ops/ms
+# Warmup Iteration   5: 26280.958 ops/ms
+Iteration   1: 22430.686 ops/ms
+Iteration   2: 14319.039 ops/ms
+Iteration   3: 14757.021 ops/ms
+
+# Run progress: 85.42% complete, ETA 00:00:58
+# Fork: 18 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 23685.201 ops/ms
+# Warmup Iteration   2: 30559.661 ops/ms
+# Warmup Iteration   3: 27847.662 ops/ms
+# Warmup Iteration   4: 32204.907 ops/ms
+# Warmup Iteration   5: 31277.241 ops/ms
+Iteration   1: 33159.864 ops/ms
+Iteration   2: 31187.180 ops/ms
+Iteration   3: 30451.075 ops/ms
+
+# Run progress: 87.50% complete, ETA 00:00:50
+# Fork: 19 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 17216.358 ops/ms
+# Warmup Iteration   2: 25154.927 ops/ms
+# Warmup Iteration   3: 23556.716 ops/ms
+# Warmup Iteration   4: 28436.445 ops/ms
+# Warmup Iteration   5: 27519.008 ops/ms
+Iteration   1: 31183.958 ops/ms
+Iteration   2: 31222.862 ops/ms
+Iteration   3: 28432.997 ops/ms
+
+# Run progress: 89.58% complete, ETA 00:00:41
+# Fork: 20 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25738.120 ops/ms
+# Warmup Iteration   2: 30857.941 ops/ms
+# Warmup Iteration   3: 32901.519 ops/ms
+# Warmup Iteration   4: 30969.583 ops/ms
+# Warmup Iteration   5: 30437.034 ops/ms
+Iteration   1: 30201.617 ops/ms
+Iteration   2: 31846.898 ops/ms
+Iteration   3: 33388.519 ops/ms
+
+# Run progress: 91.67% complete, ETA 00:00:33
+# Fork: 21 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 20999.349 ops/ms
+# Warmup Iteration   2: 24399.559 ops/ms
+# Warmup Iteration   3: 27943.436 ops/ms
+# Warmup Iteration   4: 29308.136 ops/ms
+# Warmup Iteration   5: 28783.096 ops/ms
+Iteration   1: 28054.091 ops/ms
+Iteration   2: 27115.090 ops/ms
+Iteration   3: 26878.168 ops/ms
+
+# Run progress: 93.75% complete, ETA 00:00:25
+# Fork: 22 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 24878.250 ops/ms
+# Warmup Iteration   2: 30308.459 ops/ms
+# Warmup Iteration   3: 33676.202 ops/ms
+# Warmup Iteration   4: 26064.963 ops/ms
+# Warmup Iteration   5: 28673.168 ops/ms
+Iteration   1: 34968.851 ops/ms
+Iteration   2: 33563.014 ops/ms
+Iteration   3: 33743.730 ops/ms
+
+# Run progress: 95.83% complete, ETA 00:00:16
+# Fork: 23 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 25016.423 ops/ms
+# Warmup Iteration   2: 30274.395 ops/ms
+# Warmup Iteration   3: 31475.190 ops/ms
+# Warmup Iteration   4: 28318.094 ops/ms
+# Warmup Iteration   5: 27721.420 ops/ms
+Iteration   1: 23816.192 ops/ms
+Iteration   2: 33777.525 ops/ms
+Iteration   3: 32580.056 ops/ms
+
+# Run progress: 97.92% complete, ETA 00:00:08
+# Fork: 24 of 24
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/root/jdk/.claude/worktrees/bridge-cse_01VXpLQJaGdc6q75QXSBbrie/profile-row-lottery/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 26512.616 ops/ms
+# Warmup Iteration   2: 32846.288 ops/ms
+# Warmup Iteration   3: 29480.701 ops/ms
+# Warmup Iteration   4: 32601.972 ops/ms
+# Warmup Iteration   5: 31621.883 ops/ms
+Iteration   1: 32102.311 ops/ms
+Iteration   2: 31843.169 ops/ms
+Iteration   3: 30501.564 ops/ms
+
+
+Result "lottery.jmh.RunLoopBench.hotProgram":
+  28647.474 ±(99.9%) 1694.361 ops/ms [Average]
+  (min, avg, max) = (14319.039, 28647.474, 34968.851), stdev = 4188.042
+  CI (99.9%): [26953.113, 30341.836] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:06:42
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                (bgN)  (bgPeriodUs)  (k)  (mode)   (n)  (startupMs)   Mode  Cnt      Score      Error   Units
+RunLoopBench.hotProgram     16          1000    2      bg  1000          500  thrpt   72  29089.230 ± 1893.806  ops/ms
+RunLoopBench.hotProgram     16          1000    4      bg  1000          500  thrpt   72  28647.474 ± 1694.361  ops/ms
+
+Benchmark result is saved to results/jmh/stock-bg.json

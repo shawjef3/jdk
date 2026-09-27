@@ -1,0 +1,6 @@
+out/
+target/
+logs/
+out-adv/
+out-char/
+dependency-reduced-pom.xml

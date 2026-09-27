@@ -1,0 +1,233 @@
+diff --git a/src/hotspot/cpu/x86/c1_LIRAssembler_x86.cpp b/src/hotspot/cpu/x86/c1_LIRAssembler_x86.cpp
+index 04e32e2b8be..53b29d9c5e8 100644
+--- a/src/hotspot/cpu/x86/c1_LIRAssembler_x86.cpp
++++ b/src/hotspot/cpu/x86/c1_LIRAssembler_x86.cpp
+@@ -2832,6 +2832,25 @@ void LIR_Assembler::emit_profile_call(LIR_OpProfileCall* op) {
+       // Receiver did not match any saved receiver and there is no empty row for it.
+       // Increment total counter to indicate polymorphic case.
+       __ addptr(counter_addr, DataLayout::counter_increment);
++      if (TypeProfileReplaceShift > 0) {
++        // Give this receiver a row whose count is out-counted by the overflow
++        // count; see InterpreterMacroAssembler::replace_receiver_row_if_outcounted.
++        Register tmp = tmp_load_klass;   // free again after load_klass
++        assert_different_registers(mdo, recv, tmp);
++        __ movptr(tmp, counter_addr);
++        __ shrptr(tmp, TypeProfileReplaceShift);
++        for (uint i = 0; i < VirtualCallData::row_limit(); i++) {
++          Label next_row;
++          Address row_count_addr(mdo, md->byte_offset_of_slot(data, VirtualCallData::receiver_count_offset(i)));
++          __ cmpptr(tmp, row_count_addr);
++          __ jccb(Assembler::below, next_row);
++          __ movptr(Address(mdo, md->byte_offset_of_slot(data, VirtualCallData::receiver_offset(i))), recv);
++          __ movptr(row_count_addr, (int32_t)DataLayout::counter_increment);
++          __ movptr(counter_addr, (int32_t)DataLayout::counter_increment);
++          __ jmp(update_done);
++          __ bind(next_row);
++        }
++      }
+ 
+       __ bind(update_done);
+     }
+diff --git a/src/hotspot/cpu/x86/interp_masm_x86.cpp b/src/hotspot/cpu/x86/interp_masm_x86.cpp
+index 92233ee0d07..54db46a55a4 100644
+--- a/src/hotspot/cpu/x86/interp_masm_x86.cpp
++++ b/src/hotspot/cpu/x86/interp_masm_x86.cpp
+@@ -1475,14 +1475,41 @@ void InterpreterMacroAssembler::record_klass_in_profile_helper(
+     increment_mdp_data_at(mdp, in_bytes(CounterData::count_offset()));
+   } else {
+     record_item_in_profile_helper(receiver, mdp, reg2, 0, done, TypeProfileWidth,
+-                                  &VirtualCallData::receiver_offset, &VirtualCallData::receiver_count_offset);
++                                  &VirtualCallData::receiver_offset, &VirtualCallData::receiver_count_offset,
++                                  is_virtual_call && TypeProfileReplaceShift > 0);
++  }
++}
++
++// All rows are taken by other receivers and the overflow count has just been
++// incremented. If some row's count is at most (overflow count >> TypeProfileReplaceShift),
++// that row's receiver has been out-counted by receivers without a row: give the row to
++// this receiver and restart the overflow count. The overflow count is left at one
++// increment, not zero, so the site still reads as polymorphic to the compiler.
++void InterpreterMacroAssembler::replace_receiver_row_if_outcounted(Register item, Register mdp, Register reg2,
++                                                                   Label& done, int total_rows,
++                                                                   OffsetFunction item_offset_fn,
++                                                                   OffsetFunction item_count_offset_fn) {
++  int count_offset = in_bytes(CounterData::count_offset());
++  movptr(reg2, Address(mdp, count_offset));
++  shrptr(reg2, TypeProfileReplaceShift);
++  for (int row = 0; row < total_rows; row++) {
++    Label next_row;
++    int row_count_offset = in_bytes(item_count_offset_fn(row));
++    cmpptr(reg2, Address(mdp, row_count_offset));
++    jccb(Assembler::below, next_row);
++    movptr(Address(mdp, in_bytes(item_offset_fn(row))), item);
++    movptr(Address(mdp, row_count_offset), (int32_t)DataLayout::counter_increment);
++    movptr(Address(mdp, count_offset), (int32_t)DataLayout::counter_increment);
++    jmp(done);
++    bind(next_row);
+   }
+ }
+ 
+ void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Register mdp, Register reg2, int start_row,
+                                                               Label& done, int total_rows,
+                                                               OffsetFunction item_offset_fn,
+-                                                              OffsetFunction item_count_offset_fn) {
++                                                              OffsetFunction item_count_offset_fn,
++                                                              bool replace_rows) {
+   int last_row = total_rows - 1;
+   assert(start_row <= last_row, "must be work left to do");
+   // Test this row for both the item and for null.
+@@ -1514,10 +1541,18 @@ void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Reg
+       if (start_row == last_row) {
+         // The only thing left to do is handle the null case.
+         Label found_null;
+-        jccb(Assembler::zero, found_null);
++        if (replace_rows) {
++          jcc(Assembler::zero, found_null);   // the replacement code below is long
++        } else {
++          jccb(Assembler::zero, found_null);
++        }
+         // Item did not match any saved item and there is no empty row for it.
+         // Increment total counter to indicate polymorphic case.
+         increment_mdp_data_at(mdp, in_bytes(CounterData::count_offset()));
++        if (replace_rows) {
++          replace_receiver_row_if_outcounted(item, mdp, reg2, done, total_rows,
++                                             item_offset_fn, item_count_offset_fn);
++        }
+         jmp(done);
+         bind(found_null);
+         break;
+@@ -1528,7 +1563,7 @@ void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Reg
+ 
+       // Put all the "Case 3" tests here.
+       record_item_in_profile_helper(item, mdp, reg2, start_row + 1, done, total_rows,
+-                                    item_offset_fn, item_count_offset_fn);
++                                    item_offset_fn, item_count_offset_fn, replace_rows);
+ 
+       // Found a null.  Keep searching for a matching item,
+       // but remember that this is an empty (unused) slot.
+diff --git a/src/hotspot/cpu/x86/interp_masm_x86.hpp b/src/hotspot/cpu/x86/interp_masm_x86.hpp
+index a36a697eebf..7e13138fcd5 100644
+--- a/src/hotspot/cpu/x86/interp_masm_x86.hpp
++++ b/src/hotspot/cpu/x86/interp_masm_x86.hpp
+@@ -229,7 +229,12 @@ class InterpreterMacroAssembler: public MacroAssembler {
+   void record_item_in_profile_helper(Register item, Register mdp, Register reg2, int start_row,
+                                      Label& done, int total_rows,
+                                      OffsetFunction item_offset_fn,
+-                                     OffsetFunction item_count_offset_fn);
++                                     OffsetFunction item_count_offset_fn,
++                                     bool replace_rows = false);
++  void replace_receiver_row_if_outcounted(Register item, Register mdp, Register reg2,
++                                          Label& done, int total_rows,
++                                          OffsetFunction item_offset_fn,
++                                          OffsetFunction item_count_offset_fn);
+ 
+   void update_mdp_by_offset(Register mdp_in, int offset_of_offset);
+   void update_mdp_by_offset(Register mdp_in, Register reg, int offset_of_disp);
+diff --git a/src/hotspot/share/runtime/deoptimization.cpp b/src/hotspot/share/runtime/deoptimization.cpp
+index 4042bb01c58..cf3d1f572df 100644
+--- a/src/hotspot/share/runtime/deoptimization.cpp
++++ b/src/hotspot/share/runtime/deoptimization.cpp
+@@ -2041,6 +2041,32 @@ static void log_deopt(nmethod* nm, Method* tm, intptr_t pc, frame& fr, int trap_
+   }
+ }
+ 
++// Shift the receiver counts and the overflow count of a call site's type
++// profile right by 'shift', freeing rows whose count reaches zero.
++static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
++  for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
++    if (rtd->receiver(row) == nullptr) {
++      continue;
++    }
++    uint c = (shift >= 32) ? 0 : (rtd->receiver_count(row) >> shift);
++    if (c == 0) {
++      rtd->set_receiver(row, nullptr);
++      rtd->set_receiver_count(row, 0);
++    } else {
++      rtd->set_receiver_count(row, c);
++    }
++  }
++  rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
++}
++
++static void decay_all_receiver_profiles(MethodData* mdo, int shift) {
++  for (ProfileData* p = mdo->first_data(); mdo->is_valid(p); p = mdo->next_data(p)) {
++    if (p->is_VirtualCallData()) {
++      decay_receiver_profile(p->as_ReceiverTypeData(), shift);
++    }
++  }
++}
++
+ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint trap_request)) {
+   HandleMark hm(current);
+ 
+@@ -2459,6 +2485,35 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
+         return; // the call did not change nmethod's state
+       }
+ 
++      if (TypeProfileTrapDecayShift > 0) {
++        // A receiver guard built from a call site's profile failed often enough
++        // to discard the code: the rows describe an earlier phase of the program.
++        // Age them so that the traffic seen from now on decides the next
++        // compilation instead of counts accumulated before the phase change.
++        bool guard_failed = pdata != nullptr && pdata->is_VirtualCallData() &&
++                            (reason == Reason_class_check || reason == Reason_bimorphic);
++        if (guard_failed || TypeProfileTrapDecayAnyReason) {
++          // Aged rows are only useful if the method runs profiled for a while
++          // before C2 reads them again; otherwise the recompile can see empty
++          // or stale rows and settle on a virtual call, which never traps.
++          reprofile = true;
++        }
++        if (guard_failed && !TypeProfileTrapDecayAllSites) {
++          decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
++        } else if (guard_failed || TypeProfileTrapDecayAnyReason) {
++          // A guard failure is evidence of a phase change for the whole method:
++          // its other sites' rows are as old as this one's, and a site compiled
++          // as a virtual call never traps to report that it went stale. With
++          // TypeProfileTrapDecayAnyReason, any trap that discards the code (for
++          // example an unstable_if on a path the old phase never took) counts
++          // as such evidence for the method being recompiled.
++          MethodData* mdo = guard_failed ? trap_mdo : nm->method()->method_data();
++          if (mdo != nullptr) {
++            decay_all_receiver_profiles(mdo, TypeProfileTrapDecayShift);
++          }
++        }
++      }
++
+       if (pdata != nullptr) {
+         // Record the recompilation event, if any.
+         int tstate0 = pdata->trap_state();
+diff --git a/src/hotspot/share/runtime/globals.hpp b/src/hotspot/share/runtime/globals.hpp
+index 75736d0dc7d..a1246494477 100644
+--- a/src/hotspot/share/runtime/globals.hpp
++++ b/src/hotspot/share/runtime/globals.hpp
+@@ -1347,6 +1347,30 @@ const int ObjectAlignmentInBytes = 8;
+           "Number of receiver types to record in call/cast profile")        \
+           range(0, 8)                                                       \
+                                                                             \
++  product(int, TypeProfileReplaceShift, 0,                                  \
++          "At a virtual call site whose receiver rows are all taken, let "  \
++          "a missing receiver take a row whose count is at most the "      \
++          "site's overflow count shifted right by this amount; the "       \
++          "overflow count then restarts. 0 means rows are never replaced") \
++          range(0, 30)                                                      \
++                                                                            \
++  product(int, TypeProfileTrapDecayShift, 0,                                \
++          "When a class check or bimorphic guard at a call site deopts "    \
++          "compiled code, shift that site's receiver and overflow counts " \
++          "right by this amount, freeing rows that reach zero. "           \
++          "0 means no decay")                                               \
++          range(0, 32)                                                      \
++                                                                            \
++  product(bool, TypeProfileTrapDecayAllSites, false,                        \
++          "With TypeProfileTrapDecayShift, decay the receiver profiles of " \
++          "every virtual call site in the trapping method, not only the "  \
++          "site whose guard failed")                                        \
++                                                                            \
++  product(bool, TypeProfileTrapDecayAnyReason, false,                       \
++          "With TypeProfileTrapDecayShift, decay the receiver profiles of " \
++          "every virtual call site in a method whose compiled code is "    \
++          "discarded by an uncommon trap of any reason")                    \
++                                                                            \
+   develop(intx, BciProfileWidth,      2,                                    \
+           "Number of return bci's to record in ret profile")                \
+                                                                             \
