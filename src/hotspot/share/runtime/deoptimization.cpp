@@ -2059,11 +2059,26 @@ static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
   rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
 }
 
+// Age every call site of a method by the same factor, including the MDO's
+// invocation counter. C2 judges a call site's frequency as
+// scale_count(site count) / invocation count, and scale_count() multiplies by
+// method life / MDO invocation count, so scaling the MDO counter together with
+// the site counts keeps every site's frequency, and only the receiver shares
+// change. Aging only the receiver rows would make the whole method look cold
+// to the inliner until it has been reprofiled.
 static void decay_all_receiver_profiles(MethodData* mdo, int shift) {
   for (ProfileData* p = mdo->first_data(); mdo->is_valid(p); p = mdo->next_data(p)) {
     if (p->is_VirtualCallData()) {
       decay_receiver_profile(p->as_ReceiverTypeData(), shift);
+    } else if (p->is_CounterData() && !p->is_ReceiverTypeData()) {
+      CounterData* cd = p->as_CounterData();
+      cd->set_count((shift >= 32) ? 0 : (int)(cd->count() >> shift));
     }
+  }
+  InvocationCounter* ic = mdo->invocation_counter();
+  if (!ic->carry()) {
+    uint c = (shift >= 32) ? 0 : (ic->count() >> shift);
+    ic->set(MAX2(c, 1u));
   }
 }
 
