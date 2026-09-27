@@ -2483,7 +2483,18 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
         // enough to discard the code: the rows describe an earlier phase of the
         // program. Age them so that the traffic seen from now on decides the
         // next compilation instead of counts accumulated before the phase change.
-        decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
+        if (TypeProfileTrapDecayAllSites) {
+          // A guard failure is evidence of a phase change for the whole method:
+          // its other sites' rows are as old as this one's, and a site compiled
+          // as a virtual call never traps to report that it went stale.
+          for (ProfileData* p = trap_mdo->first_data(); trap_mdo->is_valid(p); p = trap_mdo->next_data(p)) {
+            if (p->is_VirtualCallData()) {
+              decay_receiver_profile(p->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
+            }
+          }
+        } else {
+          decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
+        }
       }
 
       if (pdata != nullptr) {
