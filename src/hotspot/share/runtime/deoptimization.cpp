@@ -2041,6 +2041,24 @@ static void log_deopt(nmethod* nm, Method* tm, intptr_t pc, frame& fr, int trap_
   }
 }
 
+// Shift the receiver counts and the overflow count of a call site's type
+// profile right by 'shift', freeing rows whose count reaches zero.
+static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
+  for (uint row = 0; row < ReceiverTypeData::row_limit(); row++) {
+    if (rtd->receiver(row) == nullptr) {
+      continue;
+    }
+    uint c = (shift >= 32) ? 0 : (rtd->receiver_count(row) >> shift);
+    if (c == 0) {
+      rtd->set_receiver(row, nullptr);
+      rtd->set_receiver_count(row, 0);
+    } else {
+      rtd->set_receiver_count(row, c);
+    }
+  }
+  rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
+}
+
 JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint trap_request)) {
   HandleMark hm(current);
 
@@ -2457,6 +2475,15 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
     if (make_not_entrant) {
       if (!nm->make_not_entrant("uncommon trap")) {
         return; // the call did not change nmethod's state
+      }
+
+      if (TypeProfileTrapDecayShift > 0 && pdata != nullptr && pdata->is_VirtualCallData() &&
+          (reason == Reason_class_check || reason == Reason_bimorphic)) {
+        // The receiver guard built from this call site's profile failed often
+        // enough to discard the code: the rows describe an earlier phase of the
+        // program. Age them so that the traffic seen from now on decides the
+        // next compilation instead of counts accumulated before the phase change.
+        decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
       }
 
       if (pdata != nullptr) {
