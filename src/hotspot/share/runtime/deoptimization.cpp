@@ -2492,6 +2492,12 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
         // compilation instead of counts accumulated before the phase change.
         bool guard_failed = pdata != nullptr && pdata->is_VirtualCallData() &&
                             (reason == Reason_class_check || reason == Reason_bimorphic);
+        if (guard_failed || TypeProfileTrapDecayAnyReason) {
+          // Aged rows are only useful if the method runs profiled for a while
+          // before C2 reads them again; otherwise the recompile can see empty
+          // or stale rows and settle on a virtual call, which never traps.
+          reprofile = true;
+        }
         if (guard_failed && !TypeProfileTrapDecayAllSites) {
           decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
         } else if (guard_failed || TypeProfileTrapDecayAnyReason) {
