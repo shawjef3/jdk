@@ -2832,6 +2832,25 @@ void LIR_Assembler::emit_profile_call(LIR_OpProfileCall* op) {
       // Receiver did not match any saved receiver and there is no empty row for it.
       // Increment total counter to indicate polymorphic case.
       __ addptr(counter_addr, DataLayout::counter_increment);
+      if (TypeProfileReplaceShift > 0) {
+        // Give this receiver a row whose count is out-counted by the overflow
+        // count; see InterpreterMacroAssembler::replace_receiver_row_if_outcounted.
+        Register tmp = tmp_load_klass;   // free again after load_klass
+        assert_different_registers(mdo, recv, tmp);
+        __ movptr(tmp, counter_addr);
+        __ shrptr(tmp, TypeProfileReplaceShift);
+        for (uint i = 0; i < VirtualCallData::row_limit(); i++) {
+          Label next_row;
+          Address row_count_addr(mdo, md->byte_offset_of_slot(data, VirtualCallData::receiver_count_offset(i)));
+          __ cmpptr(tmp, row_count_addr);
+          __ jccb(Assembler::below, next_row);
+          __ movptr(Address(mdo, md->byte_offset_of_slot(data, VirtualCallData::receiver_offset(i))), recv);
+          __ movptr(row_count_addr, (int32_t)DataLayout::counter_increment);
+          __ movptr(counter_addr, (int32_t)DataLayout::counter_increment);
+          __ jmp(update_done);
+          __ bind(next_row);
+        }
+      }
 
       __ bind(update_done);
     }

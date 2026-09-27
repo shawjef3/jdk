@@ -1475,14 +1475,41 @@ void InterpreterMacroAssembler::record_klass_in_profile_helper(
     increment_mdp_data_at(mdp, in_bytes(CounterData::count_offset()));
   } else {
     record_item_in_profile_helper(receiver, mdp, reg2, 0, done, TypeProfileWidth,
-                                  &VirtualCallData::receiver_offset, &VirtualCallData::receiver_count_offset);
+                                  &VirtualCallData::receiver_offset, &VirtualCallData::receiver_count_offset,
+                                  is_virtual_call && TypeProfileReplaceShift > 0);
+  }
+}
+
+// All rows are taken by other receivers and the overflow count has just been
+// incremented. If some row's count is at most (overflow count >> TypeProfileReplaceShift),
+// that row's receiver has been out-counted by receivers without a row: give the row to
+// this receiver and restart the overflow count. The overflow count is left at one
+// increment, not zero, so the site still reads as polymorphic to the compiler.
+void InterpreterMacroAssembler::replace_receiver_row_if_outcounted(Register item, Register mdp, Register reg2,
+                                                                   Label& done, int total_rows,
+                                                                   OffsetFunction item_offset_fn,
+                                                                   OffsetFunction item_count_offset_fn) {
+  int count_offset = in_bytes(CounterData::count_offset());
+  movptr(reg2, Address(mdp, count_offset));
+  shrptr(reg2, TypeProfileReplaceShift);
+  for (int row = 0; row < total_rows; row++) {
+    Label next_row;
+    int row_count_offset = in_bytes(item_count_offset_fn(row));
+    cmpptr(reg2, Address(mdp, row_count_offset));
+    jccb(Assembler::below, next_row);
+    movptr(Address(mdp, in_bytes(item_offset_fn(row))), item);
+    movptr(Address(mdp, row_count_offset), (int32_t)DataLayout::counter_increment);
+    movptr(Address(mdp, count_offset), (int32_t)DataLayout::counter_increment);
+    jmp(done);
+    bind(next_row);
   }
 }
 
 void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Register mdp, Register reg2, int start_row,
                                                               Label& done, int total_rows,
                                                               OffsetFunction item_offset_fn,
-                                                              OffsetFunction item_count_offset_fn) {
+                                                              OffsetFunction item_count_offset_fn,
+                                                              bool replace_rows) {
   int last_row = total_rows - 1;
   assert(start_row <= last_row, "must be work left to do");
   // Test this row for both the item and for null.
@@ -1514,10 +1541,18 @@ void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Reg
       if (start_row == last_row) {
         // The only thing left to do is handle the null case.
         Label found_null;
-        jccb(Assembler::zero, found_null);
+        if (replace_rows) {
+          jcc(Assembler::zero, found_null);   // the replacement code below is long
+        } else {
+          jccb(Assembler::zero, found_null);
+        }
         // Item did not match any saved item and there is no empty row for it.
         // Increment total counter to indicate polymorphic case.
         increment_mdp_data_at(mdp, in_bytes(CounterData::count_offset()));
+        if (replace_rows) {
+          replace_receiver_row_if_outcounted(item, mdp, reg2, done, total_rows,
+                                             item_offset_fn, item_count_offset_fn);
+        }
         jmp(done);
         bind(found_null);
         break;
@@ -1528,7 +1563,7 @@ void InterpreterMacroAssembler::record_item_in_profile_helper(Register item, Reg
 
       // Put all the "Case 3" tests here.
       record_item_in_profile_helper(item, mdp, reg2, start_row + 1, done, total_rows,
-                                    item_offset_fn, item_count_offset_fn);
+                                    item_offset_fn, item_count_offset_fn, replace_rows);
 
       // Found a null.  Keep searching for a matching item,
       // but remember that this is an empty (unused) slot.

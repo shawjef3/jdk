@@ -1347,6 +1347,13 @@ const int ObjectAlignmentInBytes = 8;
           "Number of receiver types to record in call/cast profile")        \
           range(0, 8)                                                       \
                                                                             \
+  product(int, TypeProfileReplaceShift, 0,                                  \
+          "At a virtual call site whose receiver rows are all taken, let "  \
+          "a missing receiver take a row whose count is at most the "      \
+          "site's overflow count shifted right by this amount; the "       \
+          "overflow count then restarts. 0 means rows are never replaced") \
+          range(0, 30)                                                      \
+                                                                            \
   develop(intx, BciProfileWidth,      2,                                    \
           "Number of return bci's to record in ret profile")                \
                                                                             \
