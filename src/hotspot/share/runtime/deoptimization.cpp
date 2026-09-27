@@ -2059,6 +2059,14 @@ static void decay_receiver_profile(ReceiverTypeData* rtd, int shift) {
   rtd->set_count((shift >= 32) ? 0 : (int)(rtd->count() >> shift));
 }
 
+static void decay_all_receiver_profiles(MethodData* mdo, int shift) {
+  for (ProfileData* p = mdo->first_data(); mdo->is_valid(p); p = mdo->next_data(p)) {
+    if (p->is_VirtualCallData()) {
+      decay_receiver_profile(p->as_ReceiverTypeData(), shift);
+    }
+  }
+}
+
 JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint trap_request)) {
   HandleMark hm(current);
 
@@ -2477,23 +2485,26 @@ JRT_ENTRY(void, Deoptimization::uncommon_trap_inner(JavaThread* current, jint tr
         return; // the call did not change nmethod's state
       }
 
-      if (TypeProfileTrapDecayShift > 0 && pdata != nullptr && pdata->is_VirtualCallData() &&
-          (reason == Reason_class_check || reason == Reason_bimorphic)) {
-        // The receiver guard built from this call site's profile failed often
-        // enough to discard the code: the rows describe an earlier phase of the
-        // program. Age them so that the traffic seen from now on decides the
-        // next compilation instead of counts accumulated before the phase change.
-        if (TypeProfileTrapDecayAllSites) {
+      if (TypeProfileTrapDecayShift > 0) {
+        // A receiver guard built from a call site's profile failed often enough
+        // to discard the code: the rows describe an earlier phase of the program.
+        // Age them so that the traffic seen from now on decides the next
+        // compilation instead of counts accumulated before the phase change.
+        bool guard_failed = pdata != nullptr && pdata->is_VirtualCallData() &&
+                            (reason == Reason_class_check || reason == Reason_bimorphic);
+        if (guard_failed && !TypeProfileTrapDecayAllSites) {
+          decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
+        } else if (guard_failed || TypeProfileTrapDecayAnyReason) {
           // A guard failure is evidence of a phase change for the whole method:
           // its other sites' rows are as old as this one's, and a site compiled
-          // as a virtual call never traps to report that it went stale.
-          for (ProfileData* p = trap_mdo->first_data(); trap_mdo->is_valid(p); p = trap_mdo->next_data(p)) {
-            if (p->is_VirtualCallData()) {
-              decay_receiver_profile(p->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
-            }
+          // as a virtual call never traps to report that it went stale. With
+          // TypeProfileTrapDecayAnyReason, any trap that discards the code (for
+          // example an unstable_if on a path the old phase never took) counts
+          // as such evidence for the method being recompiled.
+          MethodData* mdo = guard_failed ? trap_mdo : nm->method()->method_data();
+          if (mdo != nullptr) {
+            decay_all_receiver_profiles(mdo, TypeProfileTrapDecayShift);
           }
-        } else {
-          decay_receiver_profile(pdata->as_ReceiverTypeData(), TypeProfileTrapDecayShift);
         }
       }
 
