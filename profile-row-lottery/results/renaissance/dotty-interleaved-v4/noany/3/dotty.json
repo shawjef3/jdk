@@ -1,0 +1,254 @@
+{
+  "benchmarks": ["dotty"],
+  "format_version": 5,
+  "data": {
+    "dotty": {
+      "results": [{
+        "duration_ns": 15312860506,
+        "uptime_ns": 1526487518
+      }, {
+        "duration_ns": 5697834675,
+        "uptime_ns": 17777005352
+      }, {
+        "duration_ns": 3908394926,
+        "uptime_ns": 24327416707
+      }, {
+        "duration_ns": 3538389309,
+        "uptime_ns": 29181321838
+      }, {
+        "duration_ns": 3456745942,
+        "uptime_ns": 33505130592
+      }, {
+        "duration_ns": 3338892385,
+        "uptime_ns": 37710734559
+      }, {
+        "duration_ns": 2828062726,
+        "uptime_ns": 41922246081
+      }, {
+        "duration_ns": 2667961610,
+        "uptime_ns": 45626916677
+      }, {
+        "duration_ns": 2573890889,
+        "uptime_ns": 49081532455
+      }, {
+        "duration_ns": 2455734750,
+        "uptime_ns": 52449640170
+      }],
+      "termination": "normal"
+    }
+  },
+  "environment": {
+    "os": {
+      "virt_mem_committed": 5276868608,
+      "name": "Linux",
+      "open_fd_count": 22,
+      "available_processors": 4,
+      "phys_mem_total": 8333332480,
+      "version": "6.12.94+deb13-amd64",
+      "arch": "amd64",
+      "max_fd_count": 524288,
+      "swap_space_free": 0,
+      "phys_mem_free": 280780800,
+      "swap_space_total": 0
+    },
+    "vm": {
+      "termination": "normal",
+      "name": "OpenJDK 64-Bit Server VM",
+      "classloading": {
+        "class_count": 8034,
+        "classes_total": 8034
+      },
+      "mode": "mixed mode, sharing",
+      "args": ["-XX:+CITime", "-XX:TypeProfileReplaceShift=3", "-XX:TypeProfileTrapDecayShift=8", "-XX:+TypeProfileTrapDecayAllSites"],
+      "vendor": "Oracle Corporation",
+      "spec_vendor": "Oracle Corporation",
+      "spec_name": "Java Virtual Machine Specification",
+      "compiler": {
+        "name": "HotSpot 64-Bit Tiered Compilers",
+        "compilation_time_ms": 84742
+      },
+      "start_iso": "2026-09-27T20:00:50.497Z",
+      "collectors": [{
+        "name": "G1 Young Generation",
+        "collection_count": 79,
+        "collection_time_ms": 1260
+      }, {
+        "name": "G1 Concurrent GC",
+        "collection_count": 42,
+        "collection_time_ms": 444
+      }, {
+        "name": "G1 Old Generation",
+        "collection_count": 10,
+        "collection_time_ms": 905
+      }],
+      "start_unix_ms": 1790539250497,
+      "version": "25-internal-adhoc.root.combined",
+      "pools": [{
+        "name": "CodeHeap 'non-nmethods'",
+        "type": "NON_HEAP",
+        "usage": {
+          "init": 2555904,
+          "used": 1754624,
+          "committed": 2555904,
+          "max": 5832704
+        },
+        "peak_usage": {
+          "init": 2555904,
+          "used": 1820928,
+          "committed": 2555904,
+          "max": 5832704
+        }
+      }, {
+        "name": "Metaspace",
+        "type": "NON_HEAP",
+        "usage": {
+          "init": 0,
+          "used": 61628592,
+          "committed": 62128128,
+          "max": -1
+        },
+        "peak_usage": {
+          "init": 0,
+          "used": 61628592,
+          "committed": 62128128,
+          "max": -1
+        }
+      }, {
+        "name": "CodeHeap 'profiled nmethods'",
+        "type": "NON_HEAP",
+        "usage": {
+          "init": 2555904,
+          "used": 30566272,
+          "committed": 42008576,
+          "max": 122908672
+        },
+        "peak_usage": {
+          "init": 2555904,
+          "used": 41682432,
+          "committed": 42008576,
+          "max": 122908672
+        }
+      }, {
+        "name": "Compressed Class Space",
+        "type": "NON_HEAP",
+        "usage": {
+          "init": 0,
+          "used": 6394728,
+          "committed": 6619136,
+          "max": 1073741824
+        },
+        "peak_usage": {
+          "init": 0,
+          "used": 6394728,
+          "committed": 6619136,
+          "max": 1073741824
+        }
+      }, {
+        "name": "G1 Eden Space",
+        "type": "HEAP",
+        "usage": {
+          "init": 29360128,
+          "used": 11534336,
+          "committed": 54525952,
+          "max": -1
+        },
+        "peak_usage": {
+          "init": 29360128,
+          "used": 66060288,
+          "committed": 66060288,
+          "max": -1
+        }
+      }, {
+        "name": "G1 Old Gen",
+        "type": "HEAP",
+        "usage": {
+          "init": 102760448,
+          "used": 60914784,
+          "committed": 94371840,
+          "max": 2084569088
+        },
+        "peak_usage": {
+          "init": 102760448,
+          "used": 72375632,
+          "committed": 104857600,
+          "max": 2084569088
+        }
+      }, {
+        "name": "G1 Survivor Space",
+        "type": "HEAP",
+        "usage": {
+          "init": 0,
+          "used": 7824352,
+          "committed": 8388608,
+          "max": -1
+        },
+        "peak_usage": {
+          "init": 0,
+          "used": 9437184,
+          "committed": 9437184,
+          "max": -1
+        }
+      }, {
+        "name": "CodeHeap 'non-profiled nmethods'",
+        "type": "NON_HEAP",
+        "usage": {
+          "init": 2555904,
+          "used": 9793920,
+          "committed": 9830400,
+          "max": 122916864
+        },
+        "peak_usage": {
+          "init": 2555904,
+          "used": 9793920,
+          "committed": 9830400,
+          "max": 122916864
+        }
+      }],
+      "uptime_ms": 55770,
+      "compressed_oops_mode": "32-bit",
+      "threads": {
+        "thread_count": 6,
+        "thread_count_max": 7,
+        "daemon_thread_count": 5,
+        "threads_total": 26
+      },
+      "spec_version": "25",
+      "memory": {
+        "heap_usage": {
+          "init": 132120576,
+          "used": 79224896,
+          "committed": 157286400,
+          "max": 2084569088
+        },
+        "nonheap_usage": {
+          "init": 7667712,
+          "used": 110079768,
+          "committed": 123076608,
+          "max": -1
+        },
+        "pending_finalization_count": 0
+      }
+    },
+    "jre": {
+      "java_version": "25-internal",
+      "name": "OpenJDK Runtime Environment",
+      "class_path": ["renaissance.jar"],
+      "spec_version": "25",
+      "spec_vendor": "Oracle Corporation",
+      "spec_name": "Java Platform API Specification",
+      "home": "/root/jdks/combined",
+      "version": "25-internal-adhoc.root.bridge-cse01VXpLQJaGdc6q75QXSBbrie",
+      "java_vendor": "N/A",
+      "library_path": ["/usr/java/packages/lib", "/usr/lib64", "/lib64", "/lib", "/usr/lib"]
+    }
+  },
+  "suite": {
+    "git": {
+      "commit_hash": "1de5790caa4c4756716dfcb9c34a6e0316c4727f",
+      "commit_date": "2024-11-22T17:49:47+0100",
+      "dirty": "false"
+    },
+    "name": "Renaissance Benchmark Suite",
+    "version": "0.16.0"
+  }
+}

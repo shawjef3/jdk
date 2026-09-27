@@ -10,13 +10,13 @@
 
 At an `invokevirtual`/`invokeinterface` site, the interpreter and C1 fill `TypeProfileWidth` receiver rows in first-seen order and never give a row back. A receiver that misses when all rows are held only increments the site's overflow count. C2 then inlines the hot receiver only if it holds a row and ≥ `TypeProfileMajorReceiverPercent` (90%) of the site count, or the site is mono- or bimorphic with no overflow.
 
-So for a call site shared by many callers (an interpreter's "call the user's callback" site, a fiber run loop, a stream pipeline stage), what C2 compiles is decided by which classes happened to reach the site first after the `MethodData` was created. That point itself depends on compile-queue timing. The result is bimodal steady-state throughput across identical JVM starts: 2 to 5 of 24 JVMs land in the virtual-call shape with nothing else different. On this host the inlined shape is 1.36× faster on the reproducer's loop. Once C2 has compiled the site as a plain virtual call, nothing ever revisits it: a virtual call does not trap, and profiled code does not run again, so the startup-era rows stay in charge for the life of the JVM, across later recompiles of the same method.
+So for a call site shared by many callers (an interpreter's "call the user's callback" site, a fiber run loop, a stream pipeline stage), what C2 compiles is decided by which classes happened to reach the site first after the `MethodData` was created. That point itself depends on compile-queue timing. The result is bimodal steady-state throughput across identical JVM starts: 2 or 3 of 24 JVMs land in the virtual-call shape in the reproducer's default configuration, with nothing else different. On this host the inlined shape is 1.36× faster on the reproducer's loop. Once C2 has compiled the site as a plain virtual call, nothing ever revisits it: a virtual call does not trap, and profiled code does not run again, so the startup-era rows stay in charge for the life of the JVM, across later recompiles of the same method.
 
 The OpenJDK wiki names this failure mode without a remedy (https://wiki.openjdk.org/spaces/HotSpot/pages/13729943/TypeProfile):
 
 > A polluted profile contains the first few (2) encountered types with low counts, and a high total count that signals that the ReceiverTypeData structure was too small.
 
-This report adds two things: (1) the pollution does not need to be large or even concurrent. A handful of calls from a background thread, or a single-threaded program whose first ~130 invocations use other classes, is enough, and which JVMs are affected is decided by JIT timing. (2) A prototype that fixes the reproducible cases on x86 with changes confined to the profile miss path and the uncommon-trap handler.
+This report adds two things: (1) the pollution does not need to be large or even concurrent. A handful of calls from a background thread, or a single-threaded program whose first ~130 invocations use other classes, is enough, and which JVMs are affected is decided by JIT timing. (2) A prototype, confined to the profile miss path and the uncommon-trap handler, that gets 24/24 JVMs to the inlined shape in every reproducer scenario but one. The exception: C2's first compile is a plain virtual call and nothing in the method ever traps again.
 
 ## Field report
 
@@ -128,12 +128,17 @@ The reset-to-1 is deliberate. Resetting only the evicted row would let the next 
 
 ### P3: age a call site's rows when compiled code built from them is discarded (shared, `deoptimization.cpp`)
 
-`TypeProfileTrapDecayShift=S`: in `Deoptimization::uncommon_trap_inner`, when a `class_check`/`bimorphic` trap at a virtual call site makes the nmethod not entrant, shift that site's row counts and overflow count right by S, freeing rows that reach 0, and request `CompilationPolicy::reprofile` so the method runs profiled again before C2 reads the aged rows. This follows the precedent in `ReceiverTypeData::clear_row`, which already clears the overflow count on class unloading because "there was execution phase change". Two options widen the scope:
+`TypeProfileTrapDecayShift=S`: in `Deoptimization::uncommon_trap_inner`, when a `class_check`/`bimorphic` trap at a virtual call site makes the nmethod not entrant, shift that site's row counts and overflow count right by S, and request `CompilationPolicy::reprofile` so the method runs profiled again before C2 reads the aged rows. S ≥ 32 resets the site. A smaller S ages it but keeps the evidence: each row keeps its receiver with a count of at least 1, and a non-zero overflow count stays non-zero. Aged rows are displaced by P1's replacement, not by deletion. This follows the precedent in `ReceiverTypeData::clear_row`, which already clears the overflow count on class unloading because "there was execution phase change". Two options widen the scope:
 
 - `TypeProfileTrapDecayAllSites`: age every virtual call site in the trapping method, not only the one that trapped. This is needed because the site that traps first is only one of the stale ones, and a stale site compiled as a virtual call never traps to report itself.
 - `TypeProfileTrapDecayAnyReason`: also age them when the code is discarded for any other reason (for example an `unstable_if` on a path the old phase never took). This is the only signal available when C2's first compile was already a virtual call.
 
-The reprofile request was added after the first measurement round. Without it, P3 with S=32 regressed 1 of 24 JVMs at busy k=1, which baseline gets right in 24/24: C2 recompiled 0.4 s after the rows were cleared, saw an empty profile and emitted a virtual call. With it, 24/24.
+Two refinements came out of measurement, and each fixed a regression the earlier version caused:
+
+1. **Reprofile.** Without it, P3 with S=32 regressed 1 of 24 JVMs at busy k=1, which baseline gets right in 24/24. C2 recompiled 0.4 s after the rows were cleared, saw an empty profile, emitted a virtual call, and stayed there. With reprofile, 24/24.
+2. **Keep evidence below a full reset.** The first version of S=8 freed rows below 256 and could zero the overflow count, so after a short reprofile a healthy polymorphic site could look monomorphic or bimorphic. It showed up twice: `rare3` (a stable A/B/C site) ran ~10% *faster* because C2 compiled a guard it shouldn't have, and on `dotty`, C2 code was made not entrant 8,069 times against 7,304 on stock (one run each). With rows and the polymorphic mark kept, `rare3` is back to stock behaviour and `dotty` shows 7,484. The reproducer results are unchanged (table below, v4).
+
+A third attempt was measured and dropped: scaling the MDO invocation counter along with all call-site counts, to keep call-site frequencies intact for the inliner. The same counter drives tiered policy and `is_mature()`, so it held methods back from tier 4. The hypothesis behind it, that aged sites looked "too cold" to inline, was refuted directly: `-XX:+PrintInlining` shows no "too cold" refusals on `dotty` under any configuration.
 
 ### Not prototyped
 
@@ -144,6 +149,8 @@ The reprofile request was added after the first measurement round. Without it, P
 ## Data: prototypes
 
 Same scenarios, 24 JVMs per cell, width 2:
+
+(The P3 columns are the reprofile version with S=32, a full reset. The last column is the final version, v4, rerun at busy k=1, 2, 4, background k=2, 4 and new path k=3 with the same results as the earlier combined build shown for the other cells.)
 
 | scenario | stock | P1 (N=3) | P3 site-only (S=32) | P3 all sites (S=32) | P3 any reason (S=32) | **P1 + P3 all sites + any reason (N=3, S=8)** |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -167,28 +174,62 @@ Same scenarios, 24 JVMs per cell, width 2:
 
 `Adversarial.java`: 8 s per JVM, second-half mean throughput, 5 JVMs per cell. C2 compiles of the hot method, uncommon traps, and C2 nmethods made not entrant are counted per JVM from `LogCompilation`.
 
-| case | risk it probes | stock | P1 | P3 all sites | P1 + P3 |
-| --- | --- | --- | --- | --- | --- |
-| `mega`: 8 classes in rotation | row churn, fake bimorphism | 152–195; 2 compiles; 3 traps | 151–192; 2; 2–3 | 158–201; 2; 2 | 174–199; 2; 2–3 |
-| `rare3`: A/B 50/50 + C 1/1024 | healthy polymorphic site | 106–128; 2; 3 | 107–130; 2; 2 | 124–138; 2; 2–3 | 131–142; 2; 2–3 |
-| `phase`: A, B alternate every 200 ms | forgetting A when B comes back | 1336–1410; 5; 11–12 | 1372–1430; 5; 10–11 | 1350–1412; 5; 10–12 | 1304–1430; 4; 8–9 |
-| `trapflip`: stable sites, branch flips every 300 ms | ageing stable sites on unrelated traps | 1599–1624; 4; 9 | 1470–1615; 3–4; 8–9 | 1563–1635; 3–4; 9 | 1565–1612; 4; 8–9 |
+Each cell: throughput range (calls/µs × 1000); C2 compiles of `work()`; uncommon traps.
 
-No recompile or trap storms. Compile and trap counts are equal or lower in every case, and throughput is within the run-to-run spread. The one exception is `rare3`, which is ~10% faster with P3; that was not investigated further.
+| case | risk it probes | stock | P1 | P3 all sites (S=32, reset) | P1 + P3, first version (S=8, freeing rows) | **P1 + P3 final (v4)** |
+| --- | --- | --- | --- | --- | --- | --- |
+| `mega`: 8 classes in rotation | row churn, fake bimorphism | 152–195; 2; 3 | 151–192; 2; 2–3 | 158–201; 2; 2 | 174–199; 2; 2–3 | 127–198; 2; 2–3 |
+| `rare3`: A/B 50/50 + C 1/1024 | healthy polymorphic site | 106–128; 2; 3 | 107–130; 2; 2 | 124–138; 2; 2–3 | 131–142; 2; 2–3 | 110–115; 2; 2–3 |
+| `phase`: A, B alternate every 200 ms | forgetting A when B comes back | 1336–1410; 5; 11–12 | 1372–1430; 5; 10–11 | 1350–1412; 5; 10–12 | 1304–1430; 4; 8–9 | 1331–1406; 4; 8–9 |
+| `trapflip`: stable sites, branch flips every 300 ms | ageing stable sites on unrelated traps | 1599–1624; 4; 9 | 1470–1615; 3–4; 8–9 | 1563–1635; 3–4; 9 | 1565–1612; 4; 8–9 | 1473–1584; 4; 8 |
+
+No recompile or trap storms in any version. Compile and trap counts are equal to or below stock everywhere. `rare3` is the informative case. The row-freeing versions ran it ~10% faster, because C2 saw a stable three-class site as bimorphic after ageing and compiled a guard. That's a gain here, but the same effect produced extra deopts on `dotty`. The final version leaves `rare3` at stock behaviour. Throughput otherwise stays within the run-to-run spread; `mega` and `trapflip` spread widely on this host in every configuration.
 
 ### Renaissance
 
-TODO: filled from the Renaissance run (stock vs P1+P3, 15 non-Spark benchmarks, 2 rounds).
+Renaissance 0.16.0 (GPL jar), 15 non-Spark benchmarks, `-r 10`, mean of the last 5 repetitions, each benchmark in its own JVM, `-XX:+CITime`.
+
+**15 benchmarks, stock vs P1 + P3 (first version), 2 rounds** (`results/renaissance/stock-vs-comb-v2-15bench.txt`): geomean duration ratio **1.009**. Per-benchmark ratios range from 0.858 (`scrabble`) to 1.193 (`dotty`), but a single configuration varies up to 22% between its own rounds (`finagle-http` stock: 6096 vs 4767 ms). Each round ran all 15 benchmarks on one build and then all 15 on the other, so host drift between the halves is not controlled.
+
+**`dotty`, interleaved** (stock, P1, P3 all sites, full combined back to back within each round; 5 rounds; final v4 build; `results/renaissance/dotty-interleaved-v4`):
+
+| round | stock ms | P1 | P3 all sites | P1 + P3 all sites + any reason |
+| --- | --- | --- | --- | --- |
+| 1 | 2776 | 2982 | 3065 | 3256 |
+| 2 | 3255 | 2810 | 2970 | 2678 |
+| 3 | 2849 | 3034 | 2773 | 2698 |
+| 4 | 2870 | 2635 | 3135 | 2957 |
+| 5 | 3298 | 3229 | 3187 | 3519 |
+| geomean of per-round ratios to stock | 1 | 0.976 | 1.007 | 1.001 |
+
+`dotty` was singled out because it was slower with the combination in both rounds of the 15-benchmark run, and in a first set of isolation runs (up to +12%). Two further stock rounds run hours later came in at 3381 and 3267 ms, as slow as the "regressed" prototype rounds. So the host itself drifted by more than the apparent regression, and only the interleaved design above is valid. It shows no difference detectable on this host, where single runs vary ±15%.
+
+**Conclusion:** no regression is visible at this host's noise floor. That noise floor is too high to clear a change of this kind: regressions under ~10% would not be seen. The evaluation this needs is interleaved runs of the full Renaissance and DaCapo suites (and a long-running server workload) on a quiet, pinned machine, with the three flags measured separately.
 
 ### JMH background mode
 
-TODO: filled from `results/jmh/stock-bg.json` and `results/jmh/comb-bg.json`.
+`RunLoopBench -p mode=bg -p k=2,4 -f 24 -wi 5 -i 3 -w 1 -r 1`, ops/ms, per-fork means, sorted:
+
+```
+stock    k=2: 20397 21986 22443 23583 24951 26383 26949 27133 27721 29034 30022 30039 30351 30846 31505 31906 32191 32305 32406 32968 32975 33159 33291 33597   median 30195
+stock    k=4: 17169 22798 22853 23964 26547 26684 26952 27349 28804 28854 29179 29598 29732 30058 30280 30596 31393 31482 31524 31599 31702 31812 32517 34092   median 29665
+P1+P3    k=2: 22012 22695 23372 23708 23918 25854 26162 26231 26932 27342 27593 28159 28865 29073 29587 30061 30163 30493 31032 31402 31451 31855 32546 33400   median 28512
+P1+P3    k=4: 24930 24956 25313 26595 27456 28735 28763 28857 29086 29432 29485 29522 29582 29826 30383 30528 30587 30793 30999 31489 32148 32551 33124 33360   median 29552
+```
+
+On this host the lottery does not show as a clean throughput cluster. Only 2 or 3 of 24 forks are expected in the virtual shape, and a 1.36× gap is inside this VPS's ±30% fork-to-fork spread. Stock k=4 has the one clear outlier (17169, 42% below the median; the prototype's lowest fork is 16% below), but k=2 overlaps in both builds. The shape classification from compile logs, not throughput, is the evidence here. A quiet, pinned bare-metal host should show the cluster the ZIO field data shows (16% below the rest, clear gap).
+
+## Suggested direction
+
+1. **Row replacement (P1)** is the low-risk part. It touches only the miss path of profiled code, which runs only in the interpreter and tier 3. It fixes the nondeterministic case (light or early pollution), and no measurement here showed an effect beyond run-to-run noise. On mainline it is a few instructions in the "table is full" case of `MacroAssembler::profile_receiver_type`, plus the aarch64 equivalent.
+2. **Ageing on code-discarding traps (P3)** fixes deterministic phase changes, but only when the phase change leaves evidence: a failed guard, or a trap anywhere in the method. It must age every call site of the method, request reprofiling, and never delete rows or the polymorphic mark. Each of those requirements was found by breaking it. Its scope (guard failures only, or any trap) needs a broader performance evaluation than this host can give.
+3. **Open:** a site that C2 compiled as a plain virtual call during a startup phase, in a method that never traps afterwards, never learns that its traffic changed. Profile-side fixes cannot reach it. It needs a cheap feedback path from C2 code at polymorphic call sites, for example a sampled check at the virtual fallback that requests reprofiling when one receiver outside the profile dominates.
 
 ## Limits of this work
 
 - x86 only, and against jdk-25-ga. The aarch64 twins (`interp_masm_aarch64.cpp`, `c1_LIRAssembler_aarch64.cpp`) need the same few lines. The trap-side change (P3) is shared code. On mainline, P1 goes in one place, the "table is full" case of `MacroAssembler::profile_receiver_type` (JDK-8357258). Since that code claims rows with a CAS so that a receiver is never duplicated, a replacement there should CAS the old receiver to the new one rather than store it.
 - One host, a noisy 4-vCPU VPS without a PMU, so there are no counter-level explanations of the gap.
-- The adversarial set is small and 5 JVMs per cell is a screen, not a proof. A real evaluation would need the full Renaissance and DaCapo suites and SPECjbb-style long runs with `TypeProfileTrapDecayAnyReason` in particular, since it widens ageing to every code-discarding trap.
+- The adversarial set is small and 5 JVMs per cell is a screen, not a proof. The Renaissance evidence is limited by host noise (see above). `TypeProfileTrapDecayAnyReason` in particular widens ageing to every code-discarding trap and needs its own evaluation on trap-heavy code (compilers, dynamic-language runtimes).
 - JEP 515 (AOT method profiling) freezes whatever rows the training run produced. That makes the result repeatable, but only as good as the training run's arrival order.
 
 ## Related
