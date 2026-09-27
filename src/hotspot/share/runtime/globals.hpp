@@ -1347,6 +1347,13 @@ const int ObjectAlignmentInBytes = 8;
           "Number of receiver types to record in call/cast profile")        \
           range(0, 8)                                                       \
                                                                             \
+  product(int, TypeProfileTrapDecayShift, 0,                                \
+          "When a class check or bimorphic guard at a call site deopts "    \
+          "compiled code, shift that site's receiver and overflow counts " \
+          "right by this amount, freeing rows that reach zero. "           \
+          "0 means no decay")                                               \
+          range(0, 32)                                                      \
+                                                                            \
   develop(intx, BciProfileWidth,      2,                                    \
           "Number of return bci's to record in ret profile")                \
                                                                             \
