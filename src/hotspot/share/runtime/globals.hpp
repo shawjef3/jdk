@@ -1359,6 +1359,11 @@ const int ObjectAlignmentInBytes = 8;
           "every virtual call site in the trapping method, not only the "  \
           "site whose guard failed")                                        \
                                                                             \
+  product(bool, TypeProfileTrapDecayAnyReason, false,                       \
+          "With TypeProfileTrapDecayShift, decay the receiver profiles of " \
+          "every virtual call site in a method whose compiled code is "    \
+          "discarded by an uncommon trap of any reason")                    \
+                                                                            \
   develop(intx, BciProfileWidth,      2,                                    \
           "Number of return bci's to record in ret profile")                \
                                                                             \
